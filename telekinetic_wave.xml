@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability name="telekinetic_wave">
+	<description>
+		<type>spell damage</type>
+		<activation>3.0</activation>
+		<clock_step>0.0</clock_step>
+		<cooldown_time>6.0</cooldown_time>
+		<ticks_per_gcd>1</ticks_per_gcd>
+		<force>60</force>
+		<range>30</range>
+		<spell_type>force</spell_type>
+		<attack_type>force</attack_type>
+		<damage_type>kinetic</damage_type>
+		<standard_health_percent_min>0.201</standard_health_percent_min>
+		<standard_health_percent_max>0.241</standard_health_percent_max>
+		<slot>None</slot>
+		<coefficient>2.21</coefficient>
+	</description>
+	<skills_affecting>
+		<clamoring_force>2</clamoring_force>
+		<telekinetic_momentum>3</telekinetic_momentum>
+		<reverberation>2</reverberation>
+	</skills_affecting>
+</ability>

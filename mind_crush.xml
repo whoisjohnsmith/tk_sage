@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability name="mind_crush">
+	<description>
+		<type>spell damage</type>
+		<activation>2.0</activation>
+		<clock_step>2.0</clock_step>
+		<cooldown_time>15.0</cooldown_time>
+		<force>40</force>
+		<range>30</range>
+		<spell_type>force</spell_type>
+		<attack_type>force</attack_type>
+		<damage_type>kinetic</damage_type>
+		<initial_damage>True</initial_damage>
+		<standard_health_percent_min>0.103</standard_health_percent_min>
+		<standard_health_percent_max>0.143</standard_health_percent_max>
+		<slot>None</slot>
+		<coefficient>1.23</coefficient>
+		<amount_modifier_percent>0.01</amount_modifier_percent>
+		<dot_tick_rate_interval>1.0</dot_tick_rate_interval>
+		<dot_duration>6.0</dot_duration>
+		<dot_standard_health_percent_min>0.0295</dot_standard_health_percent_min>
+		<dot_standard_health_percent_max>0.0295</dot_standard_health_percent_max>
+		<dot_coefficient>0.295</dot_coefficient>
+	</description>
+	<skills_affecting>
+		<clamoring_force>2</clamoring_force>
+		<mental_momentum>3</mental_momentum>
+	</skills_affecting>
+</ability>

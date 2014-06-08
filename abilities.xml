@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<data>
+    <ability name="disturbance">
+    	<cast_type>"casted"</cast_type>
+        <min_base_damage>1.</min_base_damage>
+        <max_base_damage>1.</max_base_damage>
+        <cast_duration>1.5</cast_duration>
+        <bonus_damage_coeff>1.</bonus_damage_coeff>
+        <ticks_per_gcd>1</ticks_per_gcd>
+        <skill_damage_bonus>4.</skill_damage_bonus>
+        <skill_crit_bonus>6.</skill_crit_bonus>
+        <skill_surge_bonus>50.</skill_surge_bonus>
+        <skill_alacrity_bonus>0.</skill_alacrity_bonus>
+        <double_proc_chance>30.</double_proc_chance>
+        <double_proc_damage>30.</double_proc_damage>
+    </ability>
+    
+    <ability name="project">
+    	<cast_type>"instant"</cast_type>
+        <min_base_damage>1.</min_base_damage>
+        <max_base_damage>1.</max_base_damage>
+        <cast_duration>1.5</cast_duration>
+        <bonus_damage_coeff>1.</bonus_damage_coeff>
+        <ticks_per_gcd>1</ticks_per_gcd>
+        <skill_damage_bonus>0.</skill_damage_bonus>
+        <skill_crit_bonus>0.</skill_crit_bonus>
+        <skill_surge_bonus>0.</skill_surge_bonus>
+        <skill_alacrity_bonus>0.</skill_alacrity_bonus>
+        <double_proc_chance>45.</double_proc_chance>
+        <double_proc_damage>50.</double_proc_damage>
+    </ability>
+</data>

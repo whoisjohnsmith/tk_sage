@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability name="weaken_mind">
+	<description>
+		<type>spell damage</type>
+		<activation>0.0</activation>
+		<clock_step>1.5</clock_step>
+		<cooldown_time>0.0</cooldown_time>
+		<force>30</force>
+		<range>30</range>
+		<spell_type>force</spell_type>
+		<attack_type>force</attack_type>
+		<damage_type>internal</damage_type>
+		<initial_damage>False</initial_damage>
+		<standard_health_percent_min>0.036</standard_health_percent_min>
+		<standard_health_percent_max>0.036</standard_health_percent_max>
+		<slot>None</slot>
+		<coefficient>0.36</coefficient>
+		<dot_tick_rate_interval>3.0</dot_tick_rate_interval>
+		<dot_duration>18.0</dot_duration>
+		<dot_standard_health_percent_min>0.036</dot_standard_health_percent_min>
+		<dot_standard_health_percent_max>0.036</dot_standard_health_percent_max>
+		<dot_coefficient>0.36</dot_coefficient>
+	</description>
+	<skills_affecting>
+		<empowered_throw>3</empowered_throw>
+	</skills_affecting>
+</ability>

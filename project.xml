@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability name="project">
+	<description>
+		<type>spell damage</type>
+		<activation>0.0</activation>
+		<clock_step>1.5</clock_step>
+		<cooldown_time>6.0</cooldown_time>
+		<ticks_per_gcd>1</ticks_per_gcd>
+		<force>45</force>
+		<range>30</range>
+		<spell_type>force</spell_type>
+		<attack_type>force</attack_type>
+		<damage_type>kinetic</damage_type>
+		<standard_health_percent_min>0.136</standard_health_percent_min>
+		<standard_health_percent_max>0.176</standard_health_percent_max>
+		<slot>None</slot>
+		<coefficient>1.56</coefficient>
+		<amount_modifier_percent>0.01</amount_modifier_percent>
+	</description>
+	<skills_affecting>
+		<empowered_throw>3</empowered_throw>
+		<upheaval>3</upheaval>
+	</skills_affecting>
+</ability>

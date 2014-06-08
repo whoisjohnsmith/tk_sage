@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<sage name="my sage">
+	<base_stats calculate_metastats="no">
+		<willpower>3290</willpower>
+		<endurance>39724</endurance>
+		<strength>200</strength>
+		<cunning>200</cunning>
+		<force_power>900</force_power>
+		<accuracy_rating>450</accuracy_rating>
+		<power>900</power>
+		<critical_rating>110</critical_rating>
+		<surge>4000</surge>
+		<alacrity>80</alacrity>
+		<standard_health>2685</standard_health>
+	</base_stats>
+	<force_sheet>
+	    <bonus_damage>1600.0</bonus_damage>
+	    <bonus_healing>0</bonus_healing>
+	    <accuracy>110.0</accuracy>
+	    <critical_chance>24.0</critical_chance>
+	    <critical_multiplier>75.0</critical_multiplier>
+	    <force_regen_rate>8.0</force_regen_rate>
+	    <activation_speed>0.0</activation_speed>
+	</force_sheet>
+	<skills>
+		<inner_strength>3</inner_strength>
+	</skills>
+	<companion_bonuses>
+		<accuracy>1.0</accuracy>
+	</companion_bonuses>
+</sage>
+  

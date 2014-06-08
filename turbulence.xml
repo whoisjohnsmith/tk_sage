@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability name="turbulence">
+	<description>
+		<type>spell damage</type>
+		<activation>2.0</activation>
+		<clock_step>2.0</clock_step>
+		<cooldown_time>9.0</cooldown_time>
+		<ticks_per_gcd>1</ticks_per_gcd>
+		<force>50</force>
+		<range>30</range>
+		<spell_type>force</spell_type>
+		<attack_type>force</attack_type>
+		<damage_type>internal</damage_type>
+		<standard_health_percent_min>0.149</standard_health_percent_min>
+		<standard_health_percent_max>0.209</standard_health_percent_max>
+		<slot>None</slot>
+		<coefficient>1.79</coefficient>
+	</description>
+	<skills_affecting>
+		<clamoring_force>2</clamoring_force>
+		<mental_momentum>3</mental_momentum>
+		<reverberation>2</reverberation>
+	</skills_affecting>
+</ability>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ability name="telekinetic_throw">
+	<description>
+		<type>spell damage</type>
+		<activation>0.0</activation>
+		<clock_step>3.0</clock_step>
+		<cooldown_time>6.0</cooldown_time>
+		<ticks_per_gcd>2</ticks_per_gcd>
+		<force>30</force>
+		<range>30</range>
+		<spell_type>force</spell_type>
+		<attack_type>force</attack_type>
+		<damage_type>kinetic</damage_type>
+		<standard_health_percent_min>0.079</standard_health_percent_min>
+		<standard_health_percent_max>0.079</standard_health_percent_max>
+		<slot>None</slot>
+		<coefficient>0.79</coefficient>
+		<amount_modifier_percent>0.01</amount_modifier_percent>
+	</description>
+	<skills_affecting>
+		<critical_kinesis>2</critical_kinesis>
+		<empowered_throw>3</empowered_throw>
+	</skills_affecting>
+</ability>
