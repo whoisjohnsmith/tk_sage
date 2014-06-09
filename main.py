@@ -90,20 +90,6 @@ class Ability(object):
         return double_proc_damage
 
 
-class Damage_Profile(object):
-    '''obsolete
-    '''
-    def __init__(self, ability_name=None, clock_step=None, total_damage=None, base_damage=None, critical_hit=None, critical_damage=None, double_proc_hit=None, double_proc_damage=None):
-        self.ability_name = ability_name
-        self.clock_step = clock_step
-        self.total_damage = total_damage
-        self.base_damage = base_damage
-        self.critical_hit = critical_hit
-        self.critical_damage = critical_damage
-        self.double_proc_hit = double_proc_hit
-        self.double_proc_damage = double_proc_damage
-
-
 class Damage_Results(object):
     def __init__(self, ability_name, clock_step, total_damage, number_of_ticks, number_of_critical_ticks, main_attack_critical=None, double_proc=None, double_proc_damage=None, double_proc_critical=None, mind_crush_num_extra_ticks=None):
         self.ability_name = ability_name
@@ -199,27 +185,24 @@ class Mind_Crush(Ability):
         
         damage_increase = self.skills_affecting['clamoring_force']*0.02
         double_tick_chance = self.skills_affecting['mental_momentum']*10.0
-        
-        total_damage = 0.0
+
+        total_number_of_ticks = 1
+        total_number_of_critical_ticks = 0
         
         # initial damage
-        initial_damage = 0.0
-        base_damage = self.description['coefficient'] * bonus_damage + standard_health * random.uniform(self.description['standard_health_percent_min'], self.description['standard_health_percent_max'])
+        rolled_damage = self.description['coefficient'] * bonus_damage + standard_health * random.uniform(self.description['standard_health_percent_min'], self.description['standard_health_percent_max'])
+        base_damage = rolled_damage + damage_increase * rolled_damage
         damage = base_damage
-        damage += damage_increase * damage
         
         critical_hit = self.is_critical_hit(critical_chance)
         if critical_hit:
-            critical_damage = self.return_critical_damage(damage, critical_multiplier)
+            total_number_of_critical_ticks += 1
+            critical_damage = self.return_critical_damage(base_damage, critical_multiplier)
             damage += critical_damage
-        else:
-            critical_damage = 0
         initial_damage = damage
  
         # dot component       
         total_ticks_damage = 0.0
-        critical_ticks_occured = False
-        critical_damage_of_tick = 0.0
         number_of_ticks = int(self.description['dot_duration'] / self.description['dot_tick_rate_interval'])
         extra_ticks = 0
         for _ in range(number_of_ticks):
@@ -227,26 +210,27 @@ class Mind_Crush(Ability):
             if double_tick_roll <= double_tick_chance:
                 extra_ticks += 1
         number_of_ticks += extra_ticks
+        total_number_of_ticks += number_of_ticks
+        
         for _ in range(number_of_ticks):
-            base_damage = self.description['dot_coefficient'] * bonus_damage + standard_health * random.uniform(self.description['dot_standard_health_percent_min'], self.description['dot_standard_health_percent_max'])
-            damage = base_damage
-            damage += damage_increase * damage
+            dot_rolled_damage = self.description['dot_coefficient'] * bonus_damage + standard_health * random.uniform(self.description['dot_standard_health_percent_min'], self.description['dot_standard_health_percent_max'])
+            dot_base_damage = dot_rolled_damage + damage_increase * dot_rolled_damage
+            dot_damage = dot_base_damage
     
-            critical_hit = self.is_critical_hit(critical_chance)
-            if critical_hit:
-                critical_damage = self.return_critical_damage(damage, critical_multiplier)
-                damage += critical_damage
-                critical_ticks_occured = True
-                critical_damage_of_tick = critical_damage
-            else:
-                critical_damage = 0
-            total_ticks_damage += damage
+            dot_critical_hit = self.is_critical_hit(critical_chance)
+            if dot_critical_hit:
+                total_number_of_critical_ticks += 1
+                dot_critical_damage = self.return_critical_damage(dot_base_damage, critical_multiplier)
+                dot_damage += dot_critical_damage                
+            total_ticks_damage += dot_damage
         
         total_damage = initial_damage + total_ticks_damage
         clock_step = (1.0 - activation_speed/100.0) * self.description['clock_step']
-        
-        damage_profile = Damage_Profile('mind_crush', clock_step, total_damage, base_damage, critical_ticks_occured, critical_damage_of_tick, double_proc_hit=False, double_proc_damage=0.0)
-        return damage_profile
+
+        drs = Damage_Results(ability_name='weaken_mind', clock_step=clock_step, total_damage=total_damage, 
+                     number_of_ticks=total_number_of_ticks, 
+                     number_of_critical_ticks=total_number_of_critical_ticks)
+        return drs
 
 
 class Weaken_Mind(Ability):
@@ -264,32 +248,31 @@ class Weaken_Mind(Ability):
         critical_multiplier = sage.force_sheet['critical_multiplier']
         activation_speed = sage.force_sheet['activation_speed']
         standard_health = sage.base_stats['standard_health']
-        
         damage_increase = self.skills_affecting['empowered_throw']*0.02
         
-        total_ticks_damage = 0.0
-        critical_ticks_occured = False
-        critical_damage_of_tick = 0.0
         number_of_ticks = int(self.description['dot_duration'] / self.description['dot_tick_rate_interval'])
+        number_of_critical_ticks = 0
+
+        total_ticks_damage = 0.0
         for _ in range(number_of_ticks):
-            base_damage = self.description['dot_coefficient'] * bonus_damage + standard_health * random.uniform(self.description['dot_standard_health_percent_min'], self.description['dot_standard_health_percent_max'])
+            rolled_damage = self.description['dot_coefficient'] * bonus_damage + standard_health * random.uniform(self.description['dot_standard_health_percent_min'], self.description['dot_standard_health_percent_max'])
+            base_damage = rolled_damage + damage_increase * rolled_damage
             damage = base_damage
-            damage += damage_increase * damage
     
             critical_hit = self.is_critical_hit(critical_chance)
             if critical_hit:
-                critical_damage = self.return_critical_damage(damage, critical_multiplier)
+                number_of_critical_ticks += 1
+                critical_damage = self.return_critical_damage(base_damage, critical_multiplier)
                 damage += critical_damage
-                critical_ticks_occured = True
-                critical_damage_of_tick = critical_damage
             else:
                 critical_damage = 0
             total_ticks_damage += damage
-        
         clock_step = (1.0 - activation_speed/100.0) * self.description['clock_step']
         
-        damage_profile = Damage_Profile('weaken_mind', clock_step, total_ticks_damage, base_damage, critical_ticks_occured, critical_damage_of_tick, double_proc_hit=False, double_proc_damage=0.0)
-        return damage_profile
+        drs = Damage_Results(ability_name='weaken_mind', clock_step=clock_step, total_damage=total_ticks_damage, 
+                     number_of_ticks=number_of_ticks, 
+                     number_of_critical_ticks=number_of_critical_ticks)
+        return drs
 
 
 class Telekinetic_Throw(Ability):
@@ -537,17 +520,25 @@ if __name__ == '__main__':
     
     clock = 0.0
     total_damage = 0.0
-    dprofs = []
+    number_of_ticks = 0
+    number_of_critical_ticks = 0
+    dresults = []
     for _ in range(rot.repetitions):
         for a in rot.template_rotation:
             s = rot.am[a]
-            dprof = sage.abilities[s].damage(sage, mob)
-            dprofs.append(dprof)
-            clock += dprof.clock_step
-            total_damage += dprof.total_damage
+            dres = sage.abilities[s].damage(sage, mob)
+            dresults.append(dres)
+            clock += dres.clock_step
+            total_damage += dres.total_damage
+            number_of_ticks += dres.number_of_ticks
+            number_of_critical_ticks += dres.number_of_critical_ticks
+
+    parse_critical = 100.0 * number_of_critical_ticks / number_of_ticks
     dps = total_damage / clock
     print 'You did', total_damage, 'damage in', clock, 'secs.'
-    print 'DPS:', dps
+    print 'Your DPS is:', dps
+    print 'Your character has a critical chance of', sage.force_sheet['critical_chance'], ', and your parse critical was', parse_critical
+    
     print
     print 'Thank you for trying it. Leave comments/bugs in the following thread:'
     print 'http://www.swtor.com/community/showthread.php?t=745689'
