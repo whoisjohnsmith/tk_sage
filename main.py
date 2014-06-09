@@ -151,7 +151,7 @@ class Disturbance(Ability):
         
         critical_hit = self.is_critical_hit(critical_chance)
         if critical_hit:
-            critical_damage = self.return_critical_damage(damage, critical_multiplier)
+            critical_damage = self.return_critical_damage(base_damage, critical_multiplier)
             damage += critical_damage
             number_of_critical_ticks += 1
         else:
@@ -164,9 +164,9 @@ class Disturbance(Ability):
             number_of_ticks += 1
             double_proc_critical = self.is_critical_hit(critical_chance)
             if double_proc_critical:
+                number_of_critical_ticks += 1
                 double_proc_critical_damage = self.return_critical_damage(double_proc_damage, critical_multiplier)
                 double_proc_damage += double_proc_critical_damage
-                number_of_critical_ticks += 1
             damage += double_proc_damage
         else:
             double_proc_damage = None
@@ -179,6 +179,7 @@ class Disturbance(Ability):
                              main_attack_critical=critical_hit, 
                              double_proc=double_proc, double_proc_damage=double_proc_damage, double_proc_critical=double_proc_critical)
         return drs
+
 
 class Mind_Crush(Ability):
     def __init__(self, fname='mind_crush.xml'):
@@ -319,9 +320,9 @@ class Telekinetic_Throw(Ability):
     
             critical_hit = self.is_critical_hit(critical_chance)
             if critical_hit:
-                critical_damage = self.return_critical_damage(damage, critical_multiplier)
-                damage += critical_damage
                 number_of_critical_ticks += 1
+                critical_damage = self.return_critical_damage(base_damage, critical_multiplier)
+                damage += critical_damage
             else:
                 critical_damage = 0
             total_ticks_damage += damage        
@@ -366,9 +367,9 @@ class Telekinetic_Wave(Ability):
         
         critical_hit = self.is_critical_hit(critical_chance)
         if critical_hit:
+            number_of_critical_ticks += 1
             critical_damage = self.return_critical_damage(base_damage, critical_multiplier)
             damage += critical_damage
-            number_of_critical_ticks += 1
         else:
             critical_damage = 0.0
         
@@ -378,9 +379,9 @@ class Telekinetic_Wave(Ability):
             double_proc_damage = self.return_double_proc_damage(base_damage, double_proc_multiplier)
             double_proc_critical = self.is_critical_hit(critical_chance)
             if double_proc_critical:
+                number_of_critical_ticks += 1
                 double_proc_critical_damage = self.return_critical_damage(double_proc_damage, critical_multiplier)
                 double_proc_damage += double_proc_critical_damage
-                number_of_critical_ticks += 1
             damage += double_proc_damage
         else:
             double_proc_damage = None
@@ -388,7 +389,7 @@ class Telekinetic_Wave(Ability):
         
         clock_step = (1.0 - activation_speed/100.0) * self.description['clock_step']
         
-        drs = Damage_Results(ability_name='disturbance', clock_step=clock_step, total_damage=damage, 
+        drs = Damage_Results(ability_name='tk_wave', clock_step=clock_step, total_damage=damage, 
                              number_of_ticks=number_of_ticks, 
                              number_of_critical_ticks=number_of_critical_ticks, 
                              main_attack_critical=critical_hit, 
@@ -409,8 +410,7 @@ class Turbulence(Ability):
         critical_chance = sage.force_sheet['critical_chance']
         critical_multiplier = sage.force_sheet['critical_multiplier']
         activation_speed = sage.force_sheet['activation_speed']
-        standard_health = sage.base_stats['standard_health']
-        
+        standard_health = sage.base_stats['standard_health']        
         if autocrit:
             critical_chance = 101.00
         damage_increase = self.skills_affecting['clamoring_force']*0.02
@@ -418,28 +418,42 @@ class Turbulence(Ability):
         double_proc_multiplier = 30.0
         critical_multiplier += self.skills_affecting['reverberation']*25.0
         
-        base_damage = self.description['coefficient'] * bonus_damage + standard_health * random.uniform(self.description['standard_health_percent_min'], self.description['standard_health_percent_max'])
+        number_of_ticks = 1
+        number_of_critical_ticks = 0
+        
+        rolled_damage = self.description['coefficient'] * bonus_damage + standard_health * random.uniform(self.description['standard_health_percent_min'], self.description['standard_health_percent_max'])
+        base_damage = rolled_damage + damage_increase * rolled_damage
         damage = base_damage
-        damage += damage_increase * damage
         
         critical_hit = self.is_critical_hit(critical_chance)
         if critical_hit:
-            critical_damage = self.return_critical_damage(damage, critical_multiplier)
+            number_of_critical_ticks += 1
+            critical_damage = self.return_critical_damage(base_damage, critical_multiplier)
             damage += critical_damage
         else:
-            critical_damage = 0
+            critical_damage = 0.0
         
-        double_proc_hit = self.is_double_proc(double_proc_chance)
-        if double_proc_hit:
-            double_proc_damage = self.return_double_proc_damage(damage, double_proc_multiplier)
+        double_proc = self.is_double_proc(double_proc_chance)
+        if double_proc:
+            number_of_ticks += 1
+            double_proc_damage = self.return_double_proc_damage(base_damage, double_proc_multiplier)
+            double_proc_critical = self.is_critical_hit(critical_chance)
+            if double_proc_critical:
+                number_of_critical_ticks += 1
+                double_proc_critical_damage = self.return_critical_damage(double_proc_damage, critical_multiplier)
+                double_proc_damage += double_proc_critical_damage
             damage += double_proc_damage
         else:
-            double_proc_damage = 0.0
-        
+            double_proc_damage = None
+            double_proc_critical = None        
         clock_step = (1.0 - activation_speed/100.0) * self.description['clock_step']
         
-        damage_profile = Damage_Profile('turbulence', clock_step, damage, base_damage, critical_hit, critical_damage, double_proc_hit, double_proc_damage)
-        return damage_profile
+        drs = Damage_Results(ability_name='turbulence', clock_step=clock_step, total_damage=damage, 
+                             number_of_ticks=number_of_ticks, 
+                             number_of_critical_ticks=number_of_critical_ticks, 
+                             main_attack_critical=critical_hit, 
+                             double_proc=double_proc, double_proc_damage=double_proc_damage, double_proc_critical=double_proc_critical)
+        return drs
 
 
 class Project(Ability):
@@ -461,28 +475,45 @@ class Project(Ability):
         double_proc_chance = self.skills_affecting['upheaval']*15.0
         double_proc_multiplier = 50.0
         
-        base_damage = self.description['coefficient'] * bonus_damage + standard_health * random.uniform(self.description['standard_health_percent_min'], self.description['standard_health_percent_max'])
+        number_of_ticks = 1
+        number_of_critical_ticks = 0
+        
+        rolled_damage = self.description['coefficient'] * bonus_damage + standard_health * random.uniform(self.description['standard_health_percent_min'], self.description['standard_health_percent_max'])
+        base_damage = rolled_damage + damage_increase * rolled_damage
         damage = base_damage
-        damage += damage_increase * damage
         
         critical_hit = self.is_critical_hit(critical_chance)
         if critical_hit:
+            number_of_critical_ticks += 1
             critical_damage = self.return_critical_damage(damage, critical_multiplier)
             damage += critical_damage
         else:
             critical_damage = 0
         
-        double_proc_hit = self.is_double_proc(double_proc_chance)
-        if double_proc_hit:
+        double_proc = self.is_double_proc(double_proc_chance)
+        if double_proc:
+            number_of_ticks += 1
             double_proc_damage = self.return_double_proc_damage(damage, double_proc_multiplier)
+            double_proc_critical = self.is_critical_hit(critical_chance)
+            if double_proc_critical:
+                number_of_critical_ticks += 1
+                double_proc_critical_damage = self.return_critical_damage(double_proc_damage, critical_multiplier)
+                double_proc_damage += double_proc_critical_damage
+
             damage += double_proc_damage
         else:
-            double_proc_damage = 0.0
+            double_proc_damage = None
+            double_proc_critical = None
         
         clock_step = (1.0 - activation_speed/100.0) * self.description['clock_step']
         
-        damage_profile = Damage_Profile('project', clock_step, damage, base_damage, critical_hit, critical_damage, double_proc_hit, double_proc_damage)
-        return damage_profile
+        drs = Damage_Results(ability_name='project', clock_step=clock_step, total_damage=damage, 
+                             number_of_ticks=number_of_ticks, 
+                             number_of_critical_ticks=number_of_critical_ticks, 
+                             main_attack_critical=critical_hit, 
+                             double_proc=double_proc, double_proc_damage=double_proc_damage, double_proc_critical=double_proc_critical)
+        return drs
+
 
 class Rotation(object):
     def __init__(self, fname='rotation.xml'):
